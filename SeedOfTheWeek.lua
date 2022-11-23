@@ -31,6 +31,8 @@ SeedOfTheWeekRoute = {
         RoomName = "RoomOpening",
         ChosenRewardType = "Boon",
         ForceLootName = "ArtemisUpgrade",
+        EnemySet = { "ThiefMineLayer" },
+        Waves = 1,
         UpgradeOptions = {
             [1] = {
                 Type = "Trait",
@@ -52,11 +54,15 @@ SeedOfTheWeekRoute = {
     [2] = {
         RoomSetName = "Tartarus",
         RoomName = "A_Combat08A",
+        EnemySet = { "PunchingBagUnit" },
+        Waves = 1,
         ChosenRewardType = "GiftDropRunProgress"
     },
     [3] = {
         RoomSetName = "Tartarus",
         RoomName = "A_Combat07",
+        EnemySet = { "PunchingBagUnit" },
+        Waves = 1,
         ChosenRewardType = "Boon",
         ForceLootName = "ZeusUpgrade",
         UpgradeOptions = {
@@ -197,4 +203,22 @@ ModUtil.WrapBaseFunction("DoUnlockRoomExits", function(baseFunc, run, room)
     end
 
     return baseFunc(run, room)
+end, SeedOfTheWeek)
+
+ModUtil.WrapBaseFunction("GenerateEncounter", function(baseFunc, run, room, encounter)
+    local depth = SeedOfTheWeek.GetRunDepth(run) + 1
+    print("GenerateEncounter", depth)
+    local orginalEnemySet = encounter.EnemySet
+    local originalMinWaves = encounter.MinWaves
+    local originalMaxWaves = encounter.MinWaves
+    if config.Enabled then
+        local data = SeedOfTheWeekRoute[depth]
+        encounter.EnemySet = data.EnemySet
+        encounter.MinWaves = data.Waves
+        encounter.MaxWaves = data.Waves
+    end
+    baseFunc(run, room, encounter)
+    encounter.EnemySet = originalEnemySet
+    encounter.MinWaves = originalMinWaves
+    encounter.MaxWaves = originalMaxWaves
 end, SeedOfTheWeek)
