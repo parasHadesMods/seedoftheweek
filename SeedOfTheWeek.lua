@@ -53,6 +53,7 @@ ModUtil.LoadOnce(function ()
             RoomName = "A_Combat10",
             EnemySet = { "PunchingBagUnit" },
             Waves = 1,
+            SecretPointIndex = 2,
             ChosenRewardType = "RoomRewardMoneyDrop"
         }, 
         [4] = {
@@ -85,6 +86,33 @@ ModUtil.LoadOnce(function ()
             RoomSetName = "Tartarus",
             RoomName = "A_Shop01",
             ChosenRewardType = "Shop",
+            StoreOptions = {
+                [1] = {
+                    Name = "LockKeyDropRunProgress",
+                    Type = "Consumable"
+                },
+                [2] = {
+                    Name = "RandomLoot",
+                    Args = {
+                        BoughtFromShop = true,
+                        Cost = 150,
+                        DoesNotBlockExit = true,
+                        ForceLootName = "PoseidonUpgrade"
+                    },
+                    Type = "Boon"
+                },
+                [3] = {
+                    Name = "HermesUpgradeDrop",
+                    Type = "Consumable"
+                }
+            },
+            UpgradeOptions = {
+                [1] = {
+                    Type = "Trait",
+                    ItemName = "UnstoredAmmoDamageTrait",
+                    Rarity = "Legendary"
+                }
+            }
         },
         [7] = {
             RoomSetName = "Base",
@@ -151,6 +179,21 @@ ModUtil.WrapBaseFunction("IsSecretDoorEligible", function(baseFunc, run, room)
     end
 end, SeedOfTheWeek)
 
+ModUtil.WrapBaseFunction("GetIdsByType", function(baseFunc, args)
+    local result = baseFunc(args)
+    if args.Name == "SecretPoint" and config.Enabled then
+        local depth = SeedOfTheWeek.GetRunDepth(CurrentRun)
+        print("GetIdsByType (SecretPoint)", depth)
+        local data = SeedOfTheWeekRoute[depth]
+        if data ~= nil and data.SecretPointIndex ~= nil then
+            result = OverwriteAndCollapseTable(result)
+            table.sort(result, cmp_multitype)
+            return { result[data.SecretPointIndex] }
+        end
+    end
+    return result
+end, SeedOfTheWeek)
+
 ModUtil.WrapBaseFunction("SetTraitsOnLoot", function(baseFunc, lootData, args)
     -- Runs when Zag opens the boon menu, so we want the depth of the current room
     local depth = SeedOfTheWeek.GetRunDepth(CurrentRun)
@@ -204,13 +247,13 @@ ModUtil.WrapBaseFunction("GenerateEncounter", function(baseFunc, run, room, enco
 end, SeedOfTheWeek)
 
 ModUtil.WrapBaseFunction("RunUnthreadedEvents", function(baseFunc, events, eventSource)
-    local depth = SeedOfTheWeek.GetRunDepth(CurrentRun) + 1
     local original = {}
-    if config.Enabled then
-        local data = SeedOfTheWeekRoute[depth]
+    if events ~= nil and config.Enabled then
         for k, v in pairs(events) do
             -- force Charon bag (by removing requirements) if the next room is the Charon fight
             if type(v) == "table" and v.FunctionName == "CheckForbiddenShopItem" then
+                local depth = SeedOfTheWeek.GetRunDepth(CurrentRun) + 1
+                local data = SeedOfTheWeekRoute[depth]
                 if data.RoomName == "CharonFight01" then
                     original[k] = DeepCopyTable(v)
                     v.GameStateRequirements = nil
@@ -219,7 +262,45 @@ ModUtil.WrapBaseFunction("RunUnthreadedEvents", function(baseFunc, events, event
         end
     end
     baseFunc(events, eventSource)
-    for k, v in pairs(original) do
-        events[k] = v
+    if events ~= nil then
+        for k, v in pairs(original) do
+            events[k] = v
+        end
+    end
+end, SeedOfTheWeek)
+
+ModUtil.WrapBaseFunction("FillInShopOptions", function(baseFunc, args)
+    if config.Enabled then
+        local depth = SeedOfTheWeek.GetRunDepth(CurrentRun)
+        print("FillInShopOptions", depth)
+        local data = SeedOfTheWeekRoute[depth]
+        if data.StoreOptions ~= nil then
+            deep_print(data.StoreOptions)
+            return { StoreOptions = data.StoreOptions }
+        else
+           return baseFunc(args)
+        end
+    else
+        local store = baseFunc(args)
+        deep_print(store)
+        return store
+    end
+end, SeedOfTheWeek)
+
+ModUtil.WrapBaseFunction("PurchaseConsumableItem", function(baseFunc, run, item, args)
+    if config.Enabled then
+        local depth = SeedOfTheWeek.GetRunDepth(run) + 1
+        local data = SeedOfTheWeekRoute[depth]
+        if item.UseText == "UseCharonStoreDiscount" and data == nil then
+            -- end of a loyalty card route
+            local originalThreadedFunctionNames = item.UseThreadedFunctionNames
+            item.UseThreadedFunctionNames = { "ShowRunClearScreen" }
+            baseFunc(run, item, arg)
+            item.UseThreadedFunctionNames = originalThreadedFunctionNames
+        else
+            return baseFunc(run, item, args)
+        end
+    else
+        return baseFunc(run, item, args)
     end
 end, SeedOfTheWeek)
