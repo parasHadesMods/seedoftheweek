@@ -92,14 +92,14 @@ ModUtil.LoadOnce(function ()
                     Type = "Consumable"
                 },
                 [2] = {
-                    Name = "RandomLoot",
+                    Name = "BlindBoxLoot",
                     Args = {
                         BoughtFromShop = true,
                         Cost = 150,
                         DoesNotBlockExit = true,
                         ForceLootName = "PoseidonUpgrade"
                     },
-                    Type = "Boon"
+                    Type = "Consumable"
                 },
                 [3] = {
                     Name = "HermesUpgradeDrop",
