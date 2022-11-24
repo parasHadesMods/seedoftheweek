@@ -25,96 +25,73 @@ local function deep_print(t, indent)
     end
   end
 
-SeedOfTheWeekRoute = {
-    [1] = {
-        RoomSetName = "Tartarus", 
-        RoomName = "RoomOpening",
-        ChosenRewardType = "Boon",
-        ForceLootName = "ArtemisUpgrade",
-        EnemySet = { "ThiefMineLayer" },
-        Waves = 1,
-        UpgradeOptions = {
-            [1] = {
-                Type = "Trait",
-                ItemName = "ArtemisWeaponTrait",
-                Rarity = "Epic"
-            },
-            [2] = {
-                Type = "Trait",
-                ItemName = "ArtemisSecondaryTrait",
-                Rarity = "Heroic"
-            },
-            [3] = {
-                Type = "Trait",
-                ItemName = "ArtemisRangedTrait",
-                Rarity = "Rare"
+ModUtil.LoadOnce(function ()
+    SeedOfTheWeekRoute = {
+        [1] = {
+            RoomSetName = "Tartarus", 
+            RoomName = "RoomOpening",
+            ChosenRewardType = "WeaponUpgrade",
+            EnemySet = { "ThiefMineLayer" },
+            Waves = 1,
+            UpgradeOptions = {
+                [1] = {
+                    Type = "Trait",
+                    ItemName = "GunExplodingSecondaryTrait",
+                    Rarity = "Common"
+                }
             }
-        }
-    },
-    [2] = {
-        RoomSetName = "Tartarus",
-        RoomName = "A_Combat08A",
-        EnemySet = { "PunchingBagUnit" },
-        Waves = 1,
-        ChosenRewardType = "GiftDropRunProgress"
-    },
-    [3] = {
-        RoomSetName = "Tartarus",
-        RoomName = "A_Combat07",
-        EnemySet = { "PunchingBagUnit" },
-        Waves = 1,
-        ChosenRewardType = "Boon",
-        ForceLootName = "ZeusUpgrade",
-        UpgradeOptions = {
-            [1] = {
-                Type = "Trait",
-                ItemName = "ZeusRangedTrait",
-                Rarity = "Rare"
-            },
-            [2] = {
-                Type = "Trait",
-                ItemName = "ZeusBonusBoltTrait",
-                Rarity = "Epic"
-            },
-            [3] = {
-                Type = "Trait",
-                ItemName = "ZeusSecondaryTrait",
-                Rarity = "Rare"
+        },
+        [2] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Combat05",
+            EnemySet = { "PunchingBagUnit" },
+            Waves = 1,
+            ChosenRewardType = "LockKeyDropRunProgress"
+        },
+        [3] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Combat10",
+            EnemySet = { "PunchingBagUnit" },
+            Waves = 1,
+            ChosenRewardType = "RoomRewardMoneyDrop"
+        }, 
+        [4] = {
+            RoomSetName = "Secrets",
+            RoomName = "RoomSecret02",
+            ChosenRewardType = "TrialUpgrade",
+            UpgradeOptions = {
+                [1] = {
+                    Type = "TransformingTrait",
+                    ItemName = "ChaosBlessingAlphaStrikeTrait",
+                    SecondaryItemName = "ChaosCurseHealthTrait",
+                    Rarity = "Rare"
+                }
             }
-        }
-    }, 
-    [4] = {
-        RoomSetName = "Secrets",
-        RoomName = "RoomSecret01",
-        ChosenRewardType = "TrialUpgrade",
-        UpgradeOptions = {
-            [1] = {
-                Type = "TransformingTrait",
-                ItemName = "ChaosBlessingMetapointTrait",
-                SecondaryItemName = "ChaosCursePrimaryAttackTrait",
-                Rarity = "Common"
-            },
-            [2] = {
-                Type = "TransformingTrait",
-                ItemName = "ChaosBlessingSecondaryTrait",
-                SecondaryItemName = "ChaosCurseHiddenRoomReward",
-                Rarity = "Common"
-            },
-            [3] = {
-                Type = "TransformingTrait",
-                ItemName = "ChaosBlessingAmmoTrait",
-                SecondaryItemName = "ChaosCurseDamageTrait",
-                Rarity = "Epic"
+        },
+        [5] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Reprieve01",
+            ChosenRewardType = "Boon",
+            ForceLootName = "AphroditeUpgrade",
+            UpgradeOptions = {
+                [1] = {
+                    Type = "Trait",
+                    ItemName = "AphroditeShoutTrait",
+                    Rarity = "Common"
+                }
             }
+        },
+        [6] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Shop01",
+            ChosenRewardType = "Shop",
+        },
+        [7] = {
+            RoomSetName = "Base",
+            RoomName = "CharonFight01"
         }
-    },
-    [5] = {
-        RoomSetName = "Tartarus",
-        RoomName = "A_Combat13",
-        ChosenRewardType = "Boon",
-        ForceLootName = "AresUpgrade",
     }
-}
+end)
 
 function SeedOfTheWeek.GetRunDepth(run)
     local depth = GetRunDepth(run)
@@ -199,6 +176,9 @@ ModUtil.WrapBaseFunction("DoUnlockRoomExits", function(baseFunc, run, room)
                 end
             end
             OfferedExitDoors = secretDoors
+        elseif data.RoomName == "CharonFight01" then
+            -- don't unlock any doors, will exit via the bag
+            OfferedExitDoors = {}
         end
     end
 
@@ -221,4 +201,25 @@ ModUtil.WrapBaseFunction("GenerateEncounter", function(baseFunc, run, room, enco
     encounter.EnemySet = originalEnemySet
     encounter.MinWaves = originalMinWaves
     encounter.MaxWaves = originalMaxWaves
+end, SeedOfTheWeek)
+
+ModUtil.WrapBaseFunction("RunUnthreadedEvents", function(baseFunc, events, eventSource)
+    local depth = SeedOfTheWeek.GetRunDepth(CurrentRun) + 1
+    local original = {}
+    if config.Enabled then
+        local data = SeedOfTheWeekRoute[depth]
+        for k, v in pairs(events) do
+            -- force Charon bag (by removing requirements) if the next room is the Charon fight
+            if type(v) == "table" and v.FunctionName == "CheckForbiddenShopItem" then
+                if data.RoomName == "CharonFight01" then
+                    original[k] = DeepCopyTable(v)
+                    v.GameStateRequirements = nil
+                end
+            end
+        end
+    end
+    baseFunc(events, eventSource)
+    for k, v in pairs(original) do
+        events[k] = v
+    end
 end, SeedOfTheWeek)
