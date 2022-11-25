@@ -15,3 +15,5 @@ Todo:
 1. forced well shop contents
 1. record mode
 1. disable rolling
+1. fixed enemy spawn positions
+1. todo forced room alignment
