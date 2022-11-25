@@ -242,3 +242,14 @@ ModUtil.WrapBaseFunction("PurchaseConsumableItem", function(baseFunc, run, item,
         return baseFunc(run, item, args)
     end
 end, SeedOfTheWeek)
+
+ModUtil.WrapBaseFunction("IsMetaUpgradeSelected", function(baseFunc, name)
+    if config.Enabled then
+        if name == "RerollMetaUpgrade" then
+            return false
+        elseif name == "RerollPanelMetaUpgrade" then
+            return false
+        end
+    end
+    return baseFunc(name)
+end, SeedOfTheWeek)
