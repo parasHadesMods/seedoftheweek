@@ -33,6 +33,9 @@ ModUtil.LoadOnce(function ()
             ChosenRewardType = "WeaponUpgrade",
             EnemySet = { "HeavyMelee" },
             Waves = 1,
+            PreSpawnPoints = {
+                HeavyMelee = { 508060 }
+            },
             UpgradeOptions = {
                 [1] = {
                     Type = "Trait",
@@ -47,6 +50,9 @@ ModUtil.LoadOnce(function ()
             EnemySet = { "PunchingBagUnitElite" },
             EliteAttributes = {
                 PunchingBagUnitElite = { "Vacuuming" }
+            },
+            PreSpawnPoints = {
+                PunchingBagUnitElite = { 410001 }
             },
             Waves = 1,
             ChosenRewardType = "Boon",
@@ -66,6 +72,9 @@ ModUtil.LoadOnce(function ()
             EnemySet = { "HeavyRangedElite" },
             EliteAttributes = {
                 HeavyRangedElite = { "Beams" }
+            },
+            PreSpawnPoints = {
+                HeavyRangedElite = { 410013, 430029, 430002 }
             },
             Waves = 1,
             SecretPointIndex = 2,
@@ -92,6 +101,9 @@ ModUtil.LoadOnce(function ()
             EnemySet = { "DisembodiedHandElite" },
             EliteAttributes = {
                 DisembodiedHandElite = { "Beams" }
+            },
+            PreSpawnPoints = {
+                DisembodiedHandElite = { 480613, 410133, 410187 }
             },
             Waves = 1,
             ChosenRewardType = "Boon",
