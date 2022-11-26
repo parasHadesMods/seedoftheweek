@@ -13,7 +13,8 @@ Features:
 1. victory screen at the end of loyalty card runs
 1. disable rolling
 1. forced room alignment
+1. fixed enemy spawn positions (initial spawn only)
 
 Todo:
 1. record mode
-1. fixed enemy spawn positions
+1. test full route including bosses/midbiome
