@@ -25,6 +25,131 @@ local function deep_print(t, indent)
     end
   end
 
+ModUtil.LoadOnce(function ()
+    SeedOfTheWeekRoute = {
+        [1] = {
+            RoomSetName = "Tartarus",
+            RoomName = "RoomOpening",
+            ChosenRewardType = "WeaponUpgrade",
+            EnemySet = { "HeavyMelee" },
+            Waves = 1,
+            UpgradeOptions = {
+                [1] = {
+                    Type = "Trait",
+                    ItemName = "GunExplodingSecondaryTrait",
+                    Rarity = "Common"
+                }
+            }
+        },
+        [2] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Combat06",
+            EnemySet = { "PunchingBagUnitElite" },
+            EliteAttributes = {
+                PunchingBagUnitElite = { "Vacuuming" }
+            },
+            Waves = 1,
+            ChosenRewardType = "Boon",
+            ForceLootName = "ZeusUpgrade",
+            UpgradeOptions = {
+                [1] = {
+                    Type = "Trait",
+                    ItemName = "ZeusWeaponTrait",
+                    Rarity = "Epic"
+                }
+            }
+        },
+        [3] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Combat08A",
+            EnemySet = { "HeavyRangedElite" },
+            EliteAttributes = {
+                HeavyRangedElite = { "Beams" }
+            },
+            Waves = 1,
+            SecretPointIndex = 2,
+            ChosenRewardType = "GemDropRunProgress"
+        },
+        [4] = {
+            RoomSetName = "Secrets",
+            RoomName = "RoomSecret03",
+            ChosenRewardType = "TrialUpgrade",
+            UpgradeOptions = {
+                [1] = {
+                    Type = "TransformingTrait",
+                    ItemName = "ChaosBlessingSecondaryTrait",
+                    SecondaryItemName = "ChaosCurseDeathWeaponTrait",
+                    Rarity = "Epic"
+                }
+            }
+        },
+        [5] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Combat05",
+            EnemySet = { "DisembodiedHandElite" },
+            EliteAttributes = {
+                DisembodiedHandElite = { "Beams" }
+            },
+            Waves = 1,
+            ChosenRewardType = "Boon",
+            ForceLootName = "ZeusUpgrade",
+            UpgradeOptions = {
+                [1] = {
+                    Type = "Trait",
+                    ItemName = "ZeusBonusBounceTrait",
+                    Rarity = "Epic"
+                }
+            },
+            StoreOptions = {
+                [1] = {
+                    Name = "TemporaryForcedSecretDoorTrait",
+                    Type = "Trait"
+                },
+                [2] = {
+                    Name = "TemporaryForcedSecretDoorTrait",
+                    Type = "Trait"
+                },
+            }
+        },
+        [6] = {
+            RoomSetName = "Tartarus",
+            RoomName = "A_Shop01",
+            ChosenRewardType = "Shop",
+            StoreOptions = {
+                [1] = {
+                    Name = "RoomRewardHealDrop",
+                    Type = "Consumable"
+                },
+                [2] = {
+                    Name = "BlindBoxLoot",
+                    Args = {
+                        BoughtFromShop = true,
+                        Cost = 150,
+                        DoesNotBlockExit = true,
+                        ForceLootName = "PoseidonUpgrade"
+                    },
+                    Type = "Consumable"
+                },
+                [3] = {
+                    Name = "HermesUpgradeDrop",
+                    Type = "Consumable"
+                }
+            },
+            UpgradeOptions = {
+                [1] = {
+                    Type = "Trait",
+                    ItemName = "RushSpeedBoostTrait",
+                    Rarity = "Epic"
+                }
+            }
+        },
+        [7] = {
+            RoomSetName = "Base",
+            RoomName = "CharonFight01"
+        }
+    }
+end)
+
 function SeedOfTheWeek.GetRunDepth(run)
     local depth = GetRunDepth(run)
     if depth == 1 and not run.Hero.ActivationFinished then
