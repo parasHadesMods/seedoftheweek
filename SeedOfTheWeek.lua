@@ -66,6 +66,19 @@ ModUtil.WrapBaseFunction("ChooseNextRoomData", function(baseFunc, run, args)
     end
 end, SeedOfTheWeek)
 
+ModUtil.WrapBaseFunction("RunShopGeneration", function(baseFunc, room)
+    local depth = SeedOfTheWeek.GetRunDepth(CurrentRun)
+    print("RunShopGeneration", depth)
+    if config.Enabled then
+        local data = SeedOfTheWeekRoute[depth]
+        print("  ", room.Flipped, data.RoomFlipped)
+        if data.RoomFlipped ~= nil then
+            room.Flipped = data.RoomFlipped
+        end
+    end
+    return baseFunc(room)
+end, SeedOfTheWeek)
+
 ModUtil.WrapBaseFunction("IsSecretDoorEligible", function(baseFunc, run, room)
     -- Runs when Zag activates an exit door, so we want the depth of the next room
     local depth = SeedOfTheWeek.GetRunDepth(run) + 1
