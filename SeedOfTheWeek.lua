@@ -84,7 +84,7 @@ ModUtil.WrapBaseFunction("IsSecretDoorEligible", function(baseFunc, run, room)
 end, SeedOfTheWeek)
 
 ModUtil.WrapBaseFunction("IsWellShopEligible", function (baseFunc, run, room)
-    local depth = SeedOfTheWeek.GetRunDepth(run) + 1
+    local depth = SeedOfTheWeek.GetRunDepth(run)
     print("IsWellShopEligible", depth)
     if config.Enabled then
         local data = SeedOfTheWeekRoute[depth]
