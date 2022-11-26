@@ -12,8 +12,8 @@ Features:
 1. forced well shop contents
 1. victory screen at the end of loyalty card runs
 1. disable rolling
+1. forced room alignment
 
 Todo:
 1. record mode
 1. fixed enemy spawn positions
-1. todo forced room alignment
