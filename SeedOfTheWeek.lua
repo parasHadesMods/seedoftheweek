@@ -338,6 +338,27 @@ ModUtil.WrapBaseFunction("PickEliteAttributes", function(baseFunc, room, enemy)
     end
 end)
 
+ModUtil.WrapBaseFunction("SelectSpawnPoint", function(baseFunc, room, enemy, encounter)
+    local depth = SeedOfTheWeek.GetRunDepth(CurrentRun)
+    print("SelectSpawnPoint", depth, enemy.Name)
+    if config.Enabled and encounter.PreSpawning then
+        local data = SeedOfTheWeekRoute[depth]
+        if data.PreSpawnPoints ~= nil and 
+           data.PreSpawnPoints[enemy.Name] ~= nil then
+            local result = table.remove(data.PreSpawnPoints[enemy.Name])
+            if result ~= nil then
+                print("  ", enemy.Name, result)
+                return result
+            end
+        else
+            local result = baseFunc(room, enemy, encounter)
+            print("  ", enemy.Name, result)
+            return result
+        end
+    end
+    return baseFunc(room, enemy, encounter)
+end, SeedOfTheWeek)
+
 ModUtil.WrapBaseFunction("RunUnthreadedEvents", function(baseFunc, events, eventSource)
     local original = {}
     if events ~= nil and config.Enabled then
