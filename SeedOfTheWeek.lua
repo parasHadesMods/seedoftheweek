@@ -62,6 +62,7 @@ ModUtil.LoadOnce(function ()
         [3] = {
             RoomSetName = "Tartarus",
             RoomName = "A_Combat08A",
+            RoomFlipped = false,
             EnemySet = { "HeavyRangedElite" },
             EliteAttributes = {
                 HeavyRangedElite = { "Beams" }
@@ -73,6 +74,7 @@ ModUtil.LoadOnce(function ()
         [4] = {
             RoomSetName = "Secrets",
             RoomName = "RoomSecret03",
+            RoomFlipped = true,
             ChosenRewardType = "TrialUpgrade",
             UpgradeOptions = {
                 [1] = {
@@ -86,6 +88,7 @@ ModUtil.LoadOnce(function ()
         [5] = {
             RoomSetName = "Tartarus",
             RoomName = "A_Combat05",
+            RoomFlipped = true,
             EnemySet = { "DisembodiedHandElite" },
             EliteAttributes = {
                 DisembodiedHandElite = { "Beams" }
@@ -114,6 +117,7 @@ ModUtil.LoadOnce(function ()
         [6] = {
             RoomSetName = "Tartarus",
             RoomName = "A_Shop01",
+            RoomFlipped = false,
             ChosenRewardType = "Shop",
             StoreOptions = {
                 [1] = {
