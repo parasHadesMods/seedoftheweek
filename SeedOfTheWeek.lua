@@ -83,6 +83,22 @@ ModUtil.WrapBaseFunction("IsSecretDoorEligible", function(baseFunc, run, room)
     end
 end, SeedOfTheWeek)
 
+ModUtil.WrapBaseFunction("IsWellShopEligible", function (baseFunc, run, room)
+    local depth = SeedOfTheWeek.GetRunDepth(run) + 1
+    print("IsWellShopEligible", depth)
+    if config.Enabled then
+        local data = SeedOfTheWeekRoute[depth]
+        if data.StoreOptions ~= nil and data.ChosenRewardType ~= "Shop" then
+            -- must be a well shop
+            return true
+        else
+            return baseFunc(run, room)
+        end
+    else
+        return baseFunc(run, room)
+    end
+end, SeedOfTheWeek)
+
 ModUtil.WrapBaseFunction("GetIdsByType", function(baseFunc, args)
     local result = baseFunc(args)
     if args.Name == "SecretPoint" and config.Enabled then
@@ -149,6 +165,24 @@ ModUtil.WrapBaseFunction("GenerateEncounter", function(baseFunc, run, room, enco
     encounter.MinWaves = originalMinWaves
     encounter.MaxWaves = originalMaxWaves
 end, SeedOfTheWeek)
+
+ModUtil.WrapBaseFunction("PickEliteAttributes", function(baseFunc, room, enemy)
+    local depth = SeedOfTheWeek.GetRunDepth(CurrentRun)
+    print("PickEliteAttributes", depth)
+    if config.Enabled then
+        local data = SeedOfTheWeekRoute[depth]
+        if data.EliteAttributes ~= nil then
+            local attributes = data.EliteAttributes[enemy.Name]
+            room.EliteAttributes[enemy.Name] = data.EliteAttributes[enemy.Name]
+        else
+            local result = baseFunc(room, enemy)
+            deep_print(room.EliteAttributes)
+            return result
+        end
+    else
+        return baseFunc(room, enemy)
+    end
+end)
 
 ModUtil.WrapBaseFunction("RunUnthreadedEvents", function(baseFunc, events, eventSource)
     local original = {}
